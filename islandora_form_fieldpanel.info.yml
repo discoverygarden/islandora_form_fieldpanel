@@ -1,0 +1,7 @@
+name: 'Islandora Form - Fieldpanel element'
+description: 'Alternative to tab elements for multi-value fields.'
+package: 'Islandora Dependencies'
+dependencies:
+  xml_form_api: 'drupal:xml_form_api'
+core: 8.x
+type: module

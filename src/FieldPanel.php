@@ -1,9 +1,5 @@
 <?php
-
-/**
- * @file
- * Allows forms to dynamically add new fieldpanes to a fieldpanel in a form.
- */
+namespace Drupal\islandora_form_fieldpanel;
 
 /**
  * A collection of static functions.
@@ -202,44 +198,4 @@ class FieldPanel {
     return $ret;
   }
 
-}
-
-/**
- * Implements hook_preprocess_fieldpanel().
- */
-function template_preprocess_fieldpanel(&$vars) {
-  $tabs = $vars['element'];
-  // Header Info.
-  $vars['collapsible'] = $tabs['#collapsible'] == TRUE;
-  $vars['collapsed'] = $tabs['#collapsed'] == TRUE;
-  // Get Fieldpanel.
-  $keys = \Drupal\Core\Render\Element::children($tabs);
-  $children = array();
-
-  foreach ($keys as $key) {
-    $children[$key] = &$tabs[$key];
-  }
-  $children = array_filter($children, array('FieldPanel', 'filterChildren'));
-  // First element has different icons, and title.
-  $first = array_shift($children);
-  $vars['title'] = isset($first['#title']) ? $first['#title'] : 1;
-  $vars['link'] = $first['#hash'];
-  // Remaining fieldpane.
-  $count = 2;
-  foreach ($children as $child) {
-    $title = isset($child['#title']) ? $child['#title'] : $count;
-    $delete = isset($child[FieldPane::DELETEBUTTON]) ? $child[FieldPane::DELETEBUTTON]['#id'] : FALSE;
-    $vars['fieldpane'][] = array($title, $child['#hash'], $delete);
-    $count++;
-  }
-  // Content Info.
-  if (isset($tabs['#children'])) {
-    $vars['content'] = $tabs['#children'];
-  }
-  else {
-    $parents = $tabs['#array_parents'];
-    $name = array_pop($parents);
-    $vars['content'] = '';
-    drupal_set_message(t('Attempted to create tab %name without defining any child fieldpanes.', array('%name' => $name)), 'error');
-  }
 }
