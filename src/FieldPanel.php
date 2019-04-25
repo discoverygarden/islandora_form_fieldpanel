@@ -1,5 +1,8 @@
 <?php
+
 namespace Drupal\islandora_form_fieldpanel;
+
+use Drupal\Core\Render\Element;
 
 /**
  * A collection of static functions.
@@ -27,8 +30,8 @@ class FieldPanel {
       // @FIXME
 // The Assets API has totally changed. CSS, JavaScript, and libraries are now
 // attached directly to render arrays using the #attached property.
-// 
-// 
+//
+//
 // @see https://www.drupal.org/node/2169605
 // @see https://www.drupal.org/node/2408597
 // drupal_add_js(ISLANDORA_FORM_FIELDPANEL_PATH_JS . 'fieldpanel.js');
@@ -36,8 +39,8 @@ class FieldPanel {
       // @FIXME
 // The Assets API has totally changed. CSS, JavaScript, and libraries are now
 // attached directly to render arrays using the #attached property.
-// 
-// 
+//
+//
 // @see https://www.drupal.org/node/2169605
 // @see https://www.drupal.org/node/2408597
 // drupal_add_css(ISLANDORA_FORM_FIELDPANEL_PATH_CSS . 'fieldpanel.css');
@@ -60,7 +63,7 @@ class FieldPanel {
     self::addRequiredResources($form_state);
     // Defaults to TRUE.
     $add = isset($element['#user_data']['add']) ? $element['#user_data']['add'] : TRUE;
-    $children = \Drupal\Core\Render\Element::children($element);
+    $children = Element::children($element);
     if ($add && !empty($children)) {
       $add_label = isset($element['#user_data']['add_label']) ? $element['#user_data']['add_label'] : t('Add');
       $element[self::ADDBUTTON] = self::createAddButton($element, $complete_form, $add_label);
@@ -87,31 +90,31 @@ class FieldPanel {
    *   The processed form element.
    */
   private static function createAddButton(array &$element, array &$complete_form, $label) {
-    $children = \Drupal\Core\Render\Element::children($element);
+    $children = Element::children($element);
     $child = $element[array_pop($children)];
 
     $add['#type'] = 'button';
     $add['#weight'] = 4;
     $add['#size'] = 30;
     $add['#id'] = $add['#name'] = $element['#hash'] . '-add';
-    $add['#attributes'] = array('class' => array('fieldpanel-add'));
+    $add['#attributes'] = ['class' => ['fieldpanel-add']];
     $add['#value'] = $label;
     $add['#prefix'] = '<div class="ui-fieldpane-add-button">';
     $add['#suffix'] = '</div>';
-    $add['#ajax'] = array(
-      'params' => array(
+    $add['#ajax'] = [
+      'params' => [
         'target' => $element['#hash'],
         'render' => $element['#hash'],
         'action' => 'add',
         'child' => $child['#hash'],
-      ),
+      ],
       'callback' => 'xml_form_elements_ajax_callback',
       // The parents wrapper is set to the parents hash.
       'wrapper' => $element['#hash'],
       'method' => 'replaceWith',
       'effect' => 'fade',
-    );
-    $add['#limit_validation_errors'] = array();
+    ];
+    $add['#limit_validation_errors'] = [];
     return $add;
   }
 
@@ -129,8 +132,8 @@ class FieldPanel {
    *   The processed form element.
    */
   private static function createMoveFieldset(array &$element, array &$complete_form, $label) {
-    $children = \Drupal\Core\Render\Element::children($element);
-    $options = array();
+    $children = Element::children($element);
+    $options = [];
     $counter = 0;
     foreach ($children as $child) {
       if (is_numeric($child)) {
@@ -143,47 +146,47 @@ class FieldPanel {
     }
     $child = $element[array_shift($children)];
 
-    $move = array(
+    $move = [
       '#type' => 'fieldset',
       '#title' => $label,
       '#id' => $element['#hash'] . '-swap-fieldset',
-      '#attributes' => array('class' => array('fieldpanel-swap-fieldset')),
+      '#attributes' => ['class' => ['fieldpanel-swap-fieldset']],
       '#name' => $element['#hash'] . '-swap-fieldset',
       '#description' => t('Move element to position. All elements at that position (and after) will be moved one step down'),
-    );
-    $move['move-element'] = array(
+    ];
+    $move['move-element'] = [
       '#type' => 'select',
       '#title' => t('Element Number'),
-      '#attributes' => array('class' => array('fieldpanel-swap-fieldset-move-element')),
+      '#attributes' => ['class' => ['fieldpanel-swap-fieldset-move-element']],
       '#options' => $options,
       '#default_value' => '0',
-    );
-    $move['move-position'] = array(
+    ];
+    $move['move-position'] = [
       '#type' => 'select',
-      '#attributes' => array('class' => array('fieldpanel-swap-fieldset-move-position')),
+      '#attributes' => ['class' => ['fieldpanel-swap-fieldset-move-position']],
       '#title' => t('Position Number'),
       '#options' => $options,
       '#default_value' => '0',
-    );
-    $move['move-op'] = array(
+    ];
+    $move['move-op'] = [
       '#type' => 'button',
       '#id' => $element['#hash'] . '-move',
       '#name' => $element['#hash'] . '-move',
       '#value' => $label,
-      '#limit_validation_errors' => array($element['#parents']),
-      '#ajax' => array(
-        'params' => array(
+      '#limit_validation_errors' => [$element['#parents']],
+      '#ajax' => [
+        'params' => [
           'target' => $element['#hash'],
           'render' => $element['#hash'],
           'action' => 'move',
           'child' => $child['#hash'],
-        ),
+        ],
         'callback' => 'xml_form_elements_ajax_callback',
         'wrapper' => $element['#hash'],
         'method' => 'replaceWith',
         'effect' => 'fade',
-      ),
-    );
+      ],
+    ];
     return $move;
   }
 

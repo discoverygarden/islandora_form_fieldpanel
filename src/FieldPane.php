@@ -1,5 +1,8 @@
 <?php
+
 namespace Drupal\islandora_form_fieldpanel;
+
+use Drupal\Core\Render\Element;
 
 /**
  * A Collection of static functions.
@@ -47,7 +50,7 @@ class FieldPane {
    */
   public static function process(array $element, array &$form_state, array $complete_form = NULL) {
     $panel = get_form_element_parent($element, $complete_form);
-    $children = \Drupal\Core\Render\Element::children($panel);
+    $children = Element::children($panel);
     // Defaults to TRUE.
     $delete = isset($element['#user_data']['delete']) ? $element['#user_data']['delete'] : TRUE;
     if (count($children) > 2 && $delete) {
@@ -89,20 +92,20 @@ class FieldPane {
     $button['#value'] = $label;
     $button['#prefix'] = '<div class="ui-fieldpane-delete-button">';
     $button['#suffix'] = '</div>';
-    $button['#ajax'] = array(
+    $button['#ajax'] = [
       'callback' => 'xml_form_elements_ajax_callback',
-      'params' => array(
+      'params' => [
         'target' => $tabs['#hash'],
         'render' => $tabs['#hash'],
         'action' => 'delete',
         'child' => $element['#hash'],
-      ),
+      ],
       // The parents wrapper is set to the parents hash.
       'wrapper' => $tabs['#hash'],
       'method' => 'replaceWith',
       'effect' => 'fade',
-    );
-    $button['#limit_validation_errors'] = array();
+    ];
+    $button['#limit_validation_errors'] = [];
     return $button;
   }
 
@@ -130,7 +133,7 @@ class FieldPane {
     $button['#value'] = $label;
     $button['#prefix'] = '<div class="ui-fieldpane-move-up-button">';
     $button['#suffix'] = '</div>';
-    $button['#limit_validation_errors'] = array();
+    $button['#limit_validation_errors'] = [];
     return $button;
   }
 
@@ -158,7 +161,7 @@ class FieldPane {
     $button['#value'] = $label;
     $button['#prefix'] = '<div class="ui-fieldpane-move-down-button">';
     $button['#suffix'] = '</div>';
-    $button['#limit_validation_errors'] = array();
+    $button['#limit_validation_errors'] = [];
     return $button;
   }
 
