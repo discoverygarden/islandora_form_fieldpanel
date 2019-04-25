@@ -1,21 +1,37 @@
 <?php
 
-namespace Drupal\islandora_form_fieldpanel;
+namespace Drupal\islandora_form_fieldpanel\Element;
 
 use Drupal\Core\Render\Element;
+use Drupal\Core\Render\Element\FormElement;
 
 /**
- * A collection of static functions.
- *
  * Allows for theming and processing fieldpanesls.
+ *
+ * @FormElement("fieldpanel")
  */
-class FieldPanel {
+class FieldPanel extends FormElement {
 
   /**
    * Constants.
    */
   const ADDBUTTON = 'add-fieldpane';
   const MOVEFIELDSET = 'move-fieldpane';
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getInfo() {
+    $info = [
+      '#input' => TRUE,
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+      '#process' => ['islandora_form_fieldpanel_fieldpanel_process'],
+      '#theme_wrappers' => ['fieldpanel', 'form_element'],
+    ];
+
+    return $info;
+  }
 
   /**
    * Loads the required resources for displaying the FieldPane element.

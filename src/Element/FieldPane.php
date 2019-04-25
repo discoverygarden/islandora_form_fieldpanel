@@ -1,15 +1,16 @@
 <?php
 
-namespace Drupal\islandora_form_fieldpanel;
+namespace Drupal\islandora_form_fieldpanel\Element;
 
 use Drupal\Core\Render\Element;
+use Drupal\Core\Render\Element\FormElement;
 
 /**
- * A Collection of static functions.
+ * Allows for theming & processing fieldpanes.
  *
- * These functions that allow for theming & processing fieldpanes.
+ * @FormElement("fieldpane")
  */
-class FieldPane {
+class FieldPane extends FormElement {
 
   /**
    * Constants.
@@ -17,6 +18,20 @@ class FieldPane {
   const DELETEBUTTON = 'delete-fieldpane';
   const MOVEUPBUTTON = 'move-up-fieldpane';
   const MOVEDOWNBUTTON = 'move-down-fieldpane';
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getInfo() {
+    $info = [
+      '#input' => TRUE,
+      '#process' => ['islandora_form_fieldpanel_fieldpane_process'],
+      '#user_data' => ['add' => TRUE, 'delete' => TRUE],
+      '#theme_wrappers' => ['fieldpane'],
+    ];
+
+    return $info;
+  }
 
   /**
    * FieldPane's theme hook.

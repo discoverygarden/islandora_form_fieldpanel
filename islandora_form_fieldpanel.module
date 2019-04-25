@@ -21,27 +21,6 @@ define('ISLANDORA_FORM_FIELDPANEL_PATH_CSS', ISLANDORA_FORM_FIELDPANEL_PATH_MODU
 // @codingStandardsIgnoreEnd
 
 /**
- * Implements hook_element_info().
- */
-function islandora_form_fieldpanel_element_info() {
-  return array(
-    'fieldpanel' => array(
-      '#input' => TRUE,
-      '#collapsible' => TRUE,
-      '#collapsed' => FALSE,
-      '#process' => array('islandora_form_fieldpanel_fieldpanel_process'),
-      '#theme_wrappers' => array('fieldpanel', 'form_element'),
-    ),
-    'fieldpane' => array(
-      '#input' => TRUE,
-      '#process' => array('islandora_form_fieldpanel_fieldpane_process'),
-      '#user_data' => array('add' => TRUE, 'delete' => TRUE),
-      '#theme_wrappers' => array('fieldpane'),
-    ),
-  );
-}
-
-/**
  * Implements hook_theme().
  */
 function islandora_form_fieldpanel_theme($existing, $type, $theme, $path) {
