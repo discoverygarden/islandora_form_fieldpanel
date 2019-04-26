@@ -170,8 +170,8 @@ function islandora_form_fieldpanel_form_element_fieldpane_ajax_move(FormElement 
   $move_values = _islandora_form_fieldpanel_form_element_retrieve_move_values($values);
 
   // Deal with input form.
-  $current_values = &$form_state['input'];
-  $current_complete_form_values = &$form_state['complete form'];
+  $current_values = $form_state->getUserInput();
+  $current_complete_form_values = &$form_state->getCompleteForm();
   foreach ($form_state->getTriggeringElement()['#parents'] as $value) {
     if ($value !== 'move-fieldpane' && $value !== 'move-up-fieldpane' && $value !== 'move-down-fieldpane' && $value !== 'move-op' && !is_int($value)) {
       $current_values = &$current_values[$value];
@@ -182,6 +182,7 @@ function islandora_form_fieldpanel_form_element_fieldpane_ajax_move(FormElement 
   $move_element = $current_values[intval($move_values['move-element'])];
   $current_values[intval($move_values['move-element'])] = $current_values[$move_values['move-position']];
   $current_values[$move_values['move-position']] = $move_element;
+  $form_state->setUserInput($current_values);
 }
 
 /**
