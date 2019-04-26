@@ -28,7 +28,6 @@ function islandora_form_fieldpanel_theme($existing, $type, $theme, $path) {
     // Single Field Panel holds multiple field panes.
     ISLANDORA_FORM_FIELDPANEL_THEME_FIELDPANEL => [
       'render element' => 'element',
-      'file' => 'includes/FieldPanel.inc',
     ],
     // The content of a single fieldpane.
     ISLANDORA_FORM_FIELDPANEL_THEME_FIELDPANE => [
@@ -88,7 +87,6 @@ function islandora_form_fieldpanel_fieldpanel_process(array $element, array &$fo
 // @see https://www.drupal.org/node/2408597
 // drupal_add_js(drupal_get_path('module', 'islandora_form_fieldpanel') . '/js/fieldpanel.js');
 
-  $form_state->loadInclude('islandora_form_fieldpanel', 'inc', 'includes/FieldPanel');
   return FieldPanel::process($element, $form_state, $complete_form);
 }
 
