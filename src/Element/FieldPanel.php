@@ -4,6 +4,7 @@ namespace Drupal\islandora_form_fieldpanel\Element;
 
 use Drupal\Core\Render\Element;
 use Drupal\Core\Render\Element\FormElement;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Allows for theming and processing fieldpanesls.
@@ -40,7 +41,7 @@ class FieldPanel extends FormElement {
    *   Keeps us from loading the same files multiple times, while not required
    *   it just saves some time.
    */
-  public static function addRequiredResources(array &$form_state) {
+  public static function addRequiredResources(FormStateInterface $form_state) {
     static $load = TRUE;
     if ($load) {
       // @FIXME
@@ -70,12 +71,12 @@ class FieldPanel extends FormElement {
    *
    * @param array $element
    *   The element.
-   * @param array $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state.
    * @param array $complete_form
    *   The completed form.
    */
-  public static function process(array $element, array &$form_state, array $complete_form = NULL) {
+  public static function process(array $element, FormStateInterface $form_state, array $complete_form = NULL) {
     self::addRequiredResources($form_state);
     // Defaults to TRUE.
     $add = isset($element['#user_data']['add']) ? $element['#user_data']['add'] : TRUE;

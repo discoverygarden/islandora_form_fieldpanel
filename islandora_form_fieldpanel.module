@@ -6,6 +6,10 @@
  */
 
 use Drupal\Core\Render\Element;
+use Drupal\Core\Form\FormStateInterface;
+
+use Drupal\islandora_form_fieldpanel\Element\FieldPane;
+use Drupal\islandora_form_fieldpanel\Element\FieldPanel;
 
 /**
  * Constants.
@@ -42,7 +46,7 @@ function islandora_form_fieldpanel_theme($existing, $type, $theme, $path) {
  *
  * @param array $element
  *   The element to be processed.
- * @param array $form_state
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The drupal form state.
  * @param array $complete_form
  *   The drupal form.
@@ -50,7 +54,7 @@ function islandora_form_fieldpanel_theme($existing, $type, $theme, $path) {
  * @return array
  *   The processed element.
  */
-function islandora_form_fieldpanel_fieldpane_process(array $element, array &$form_state, array $complete_form = NULL) {
+function islandora_form_fieldpanel_fieldpane_process(array $element, FormStateInterface $form_state, array $complete_form = []) {
   $form_state->loadInclude('islandora_form_fieldpanel', 'inc', 'includes/FieldPane');
   return FieldPane::process($element, $form_state, $complete_form);
 }
@@ -60,7 +64,7 @@ function islandora_form_fieldpanel_fieldpane_process(array $element, array &$for
  *
  * @param array $element
  *   The element to be processed.
- * @param array $form_state
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The drupal form state.
  * @param array $complete_form
  *   The drupal form.
@@ -68,7 +72,7 @@ function islandora_form_fieldpanel_fieldpane_process(array $element, array &$for
  * @return array
  *   The processed element.
  */
-function islandora_form_fieldpanel_fieldpanel_process(array $element, array &$form_state, array $complete_form = NULL) {
+function islandora_form_fieldpanel_fieldpanel_process(array $element, FormStateInterface $form_state, array $complete_form = []) {
   // @FIXME
 // The Assets API has totally changed. CSS, JavaScript, and libraries are now
 // attached directly to render arrays using the #attached property.
@@ -93,8 +97,8 @@ function islandora_form_fieldpanel_fieldpanel_process(array $element, array &$fo
 /**
  * Implements hook_WIDGET_ajax_alter().
  */
-function islandora_form_fieldpanel_form_element_fieldpanel_ajax_alter(FormElement $element, array &$form, array &$form_state) {
-  $triggering_element = $form_state['triggering_element'];
+function islandora_form_fieldpanel_form_element_fieldpanel_ajax_alter(FormElement $element, array &$form, FormStateInterface $form_state) {
+  $triggering_element = $form_state->getTriggeringElement();
   $action = $triggering_element['#ajax']['params']['action'];
   switch ($action) {
     case 'add':
@@ -115,8 +119,8 @@ function islandora_form_fieldpanel_form_element_fieldpanel_ajax_alter(FormElemen
 /**
  * Adds new field pane to panel.
  */
-function islandora_form_fieldpanel_form_element_fieldpane_ajax_add(FormElement $element, array &$form, array &$form_state) {
-  $pane = $element->findElement($form_state['triggering_element']['#ajax']['params']['child']);
+function islandora_form_fieldpanel_form_element_fieldpane_ajax_add(FormElement $element, array &$form, FormStateInterface $form_state) {
+  $pane = $element->findElement($form_state->getTriggeringElement()['#ajax']['params']['child']);
   $new_pane = clone $pane;
 
   $each_function = function ($element) {
@@ -156,8 +160,8 @@ function islandora_form_fieldpanel_form_element_fieldpane_ajax_add(FormElement $
 /**
  * Removed field pane from panel.
  */
-function islandora_form_fieldpanel_form_element_fieldpane_ajax_delete(FormElement $element, array &$form, array &$form_state) {
-  $pane = $element->findElement($form_state['triggering_element']['#ajax']['params']['child']);
+function islandora_form_fieldpanel_form_element_fieldpane_ajax_delete(FormElement $element, array &$form, FormStateInterface $form_state) {
+  $pane = $element->findElement($form_state->getTriggeringElement()['#ajax']['params']['child']);
   $pane->orphan();
   foreach (Element::children($form) as $child) {
     if ($form[$child]['#hash'] == $pane->hash) {
@@ -170,14 +174,14 @@ function islandora_form_fieldpanel_form_element_fieldpane_ajax_delete(FormElemen
 /**
  * Moves field panel to new position.
  */
-function islandora_form_fieldpanel_form_element_fieldpane_ajax_move(FormElement $element, &$form, &$form_state) {
-  $values = $form_state['values'];
+function islandora_form_fieldpanel_form_element_fieldpane_ajax_move(FormElement $element, &$form, FormStateInterface $form_state) {
+  $values = $form_state->getValues();
   $move_values = _islandora_form_fieldpanel_form_element_retrieve_move_values($values);
 
   // Deal with input form.
   $current_values = &$form_state['input'];
   $current_complete_form_values = &$form_state['complete form'];
-  foreach ($form_state['triggering_element']['#parents'] as $value) {
+  foreach ($form_state->getTriggeringElement()['#parents'] as $value) {
     if ($value !== 'move-fieldpane' && $value !== 'move-up-fieldpane' && $value !== 'move-down-fieldpane' && $value !== 'move-op' && !is_int($value)) {
       $current_values = &$current_values[$value];
       $current_complete_form_values = &$current_complete_form_values[$value];

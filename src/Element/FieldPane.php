@@ -4,6 +4,7 @@ namespace Drupal\islandora_form_fieldpanel\Element;
 
 use Drupal\Core\Render\Element;
 use Drupal\Core\Render\Element\FormElement;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Allows for theming & processing fieldpanes.
@@ -55,7 +56,7 @@ class FieldPane extends FormElement {
    *
    * @param array $element
    *   The element.
-   * @param array $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state.
    * @param array $complete_form
    *   The completed form.
@@ -63,7 +64,7 @@ class FieldPane extends FormElement {
    * @return array
    *   The processed array.
    */
-  public static function process(array $element, array &$form_state, array $complete_form = NULL) {
+  public static function process(array $element, FormStateInterface $form_state, array $complete_form = NULL) {
     $panel = get_form_element_parent($element, $complete_form);
     $children = Element::children($panel);
     // Defaults to TRUE.
