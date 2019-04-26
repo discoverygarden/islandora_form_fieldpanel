@@ -8,3 +8,4 @@ fieldpanel:
   dependencies:
     - core/jquery
     - core/drupal
+    - core/jquery.ui.sortable
