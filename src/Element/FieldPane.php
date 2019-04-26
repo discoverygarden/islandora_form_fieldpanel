@@ -96,7 +96,7 @@ class FieldPane extends FormElement {
    * @param string $label
    *   The label.
    *
-   * @return FormElement
+   * @return array
    *   The processed element.
    */
   private static function createRemoveButton(array &$element, array & $complete_form, $label) {
@@ -137,7 +137,7 @@ class FieldPane extends FormElement {
    * @param string $label
    *   The label.
    *
-   * @return FormElement
+   * @return array
    *   The processed element.
    */
   private static function createMoveUpButton(array &$element, array & $complete_form, $label) {
@@ -165,7 +165,7 @@ class FieldPane extends FormElement {
    * @param string $label
    *   The label.
    *
-   * @return FormElement
+   * @return array
    *   The processed element.
    */
   private static function createMoveDownButton(array &$element, array & $complete_form, $label) {

@@ -3,7 +3,7 @@
  * Provides capability to move field panel element up/down.
  */
 
-(function ($) {
+(function (Drupal, $) {
 
   "use strict";
 
@@ -68,4 +68,4 @@
       });
     }
   };
-})(jQuery);
+})(Drupal, jQuery);

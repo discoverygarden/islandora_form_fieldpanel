@@ -41,27 +41,10 @@ class FieldPanel extends FormElement {
    *   Keeps us from loading the same files multiple times, while not required
    *   it just saves some time.
    */
-  public static function addRequiredResources(FormStateInterface $form_state) {
+  public static function addRequiredResources(array &$element) {
     static $load = TRUE;
     if ($load) {
-      // @FIXME
-// The Assets API has totally changed. CSS, JavaScript, and libraries are now
-// attached directly to render arrays using the #attached property.
-//
-//
-// @see https://www.drupal.org/node/2169605
-// @see https://www.drupal.org/node/2408597
-// drupal_add_js(ISLANDORA_FORM_FIELDPANEL_PATH_JS . 'fieldpanel.js');
-
-      // @FIXME
-// The Assets API has totally changed. CSS, JavaScript, and libraries are now
-// attached directly to render arrays using the #attached property.
-//
-//
-// @see https://www.drupal.org/node/2169605
-// @see https://www.drupal.org/node/2408597
-// drupal_add_css(ISLANDORA_FORM_FIELDPANEL_PATH_CSS . 'fieldpanel.css');
-
+      $element['#attached'] = ['library' => ['islandora_form_fieldpanel/fieldpanel']];
       $load = FALSE;
     }
   }
@@ -77,7 +60,7 @@ class FieldPanel extends FormElement {
    *   The completed form.
    */
   public static function process(array $element, FormStateInterface $form_state, array $complete_form = NULL) {
-    self::addRequiredResources($form_state);
+    self::addRequiredResources($element);
     // Defaults to TRUE.
     $add = isset($element['#user_data']['add']) ? $element['#user_data']['add'] : TRUE;
     $children = Element::children($element);
@@ -103,7 +86,7 @@ class FieldPanel extends FormElement {
    * @param string $label
    *   The label.
    *
-   * @return FormElement
+   * @return array
    *   The processed form element.
    */
   private static function createAddButton(array &$element, array &$complete_form, $label) {
@@ -145,7 +128,7 @@ class FieldPanel extends FormElement {
    * @param string $label
    *   The label.
    *
-   * @return FormElement
+   * @return array
    *   The processed form element.
    */
   private static function createMoveFieldset(array &$element, array &$complete_form, $label) {
