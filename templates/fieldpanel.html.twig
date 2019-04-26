@@ -1,0 +1,18 @@
+{#
+
+/**
+ * @file
+ * Template for the Tabs Element.
+ */
+#}
+{% if collapsible %}
+  set classes = 'islandora-form-fieldpanel-collapsible'
+{% endif %}
+{% if collapsed %}
+  set classes = classes ~ 'islandora-form-fieldpanel-collapsed'
+{% endif %}
+
+<div class="islandora-form-fieldpanel-panel {{ classes }}">
+  <!-- Content  -->
+  {{ content }}
+</div>

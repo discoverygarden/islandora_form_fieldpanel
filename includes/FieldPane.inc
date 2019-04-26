@@ -5,6 +5,8 @@
  * Allows forms to dynamically add new fieldpanes to a fieldpanel in a form.
  */
 
+use Drupal\islandora_form_fieldpanel\Element\FieldPane;
+
 module_load_include('inc', 'php_lib', 'DrupalFormHelpers');
 
 /**

@@ -32,11 +32,20 @@ function islandora_form_fieldpanel_theme($existing, $type, $theme, $path) {
     // Single Field Panel holds multiple field panes.
     ISLANDORA_FORM_FIELDPANEL_THEME_FIELDPANEL => [
       'render element' => 'element',
+      'variables' => [
+        'content' => NULL,
+        'collapsible' => NULL,
+        'collapsed' => NULL,
+      ],
     ],
     // The content of a single fieldpane.
     ISLANDORA_FORM_FIELDPANEL_THEME_FIELDPANE => [
+      'function' => 'theme_fieldpane',
       'render element' => 'element',
       'file' => 'includes/FieldPane.inc',
+      'variables' => [
+        'element' => [],
+      ],
     ],
   ];
 }
