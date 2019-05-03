@@ -1,16 +1,17 @@
 <?php
 
-/**
- * @file
- * Allows forms to dynamically add new fieldpanes to a fieldpanel in a form.
- */
+namespace Drupal\islandora_form_fieldpanel\Element;
+
+use Drupal\Core\Render\Element;
+use Drupal\Core\Render\Element\FormElement;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
- * A collection of static functions.
- *
  * Allows for theming and processing fieldpanesls.
+ *
+ * @FormElement("fieldpanel")
  */
-class FieldPanel {
+class FieldPanel extends FormElement {
 
   /**
    * Constants.
@@ -19,17 +20,31 @@ class FieldPanel {
   const MOVEFIELDSET = 'move-fieldpane';
 
   /**
+   * {@inheritdoc}
+   */
+  public function getInfo() {
+    $info = [
+      '#input' => TRUE,
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+      '#process' => ['islandora_form_fieldpanel_fieldpanel_process'],
+      '#theme_wrappers' => ['fieldpanel', 'form_element'],
+    ];
+
+    return $info;
+  }
+
+  /**
    * Loads the required resources for displaying the FieldPane element.
    *
    * @static var boolean $load
    *   Keeps us from loading the same files multiple times, while not required
    *   it just saves some time.
    */
-  public static function addRequiredResources(array &$form_state) {
+  public static function addRequiredResources(array &$element) {
     static $load = TRUE;
     if ($load) {
-      drupal_add_js(ISLANDORA_FORM_FIELDPANEL_PATH_JS . 'fieldpanel.js');
-      drupal_add_css(ISLANDORA_FORM_FIELDPANEL_PATH_CSS . 'fieldpanel.css');
+      $element['#attached'] = ['library' => ['islandora_form_fieldpanel/fieldpanel']];
       $load = FALSE;
     }
   }
@@ -39,16 +54,16 @@ class FieldPanel {
    *
    * @param array $element
    *   The element.
-   * @param array $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state.
    * @param array $complete_form
    *   The completed form.
    */
-  public static function process(array $element, array &$form_state, array $complete_form = NULL) {
-    self::addRequiredResources($form_state);
+  public static function process(array $element, FormStateInterface $form_state, array $complete_form = NULL) {
+    self::addRequiredResources($element);
     // Defaults to TRUE.
     $add = isset($element['#user_data']['add']) ? $element['#user_data']['add'] : TRUE;
-    $children = element_children($element);
+    $children = Element::children($element);
     if ($add && !empty($children)) {
       $add_label = isset($element['#user_data']['add_label']) ? $element['#user_data']['add_label'] : t('Add');
       $element[self::ADDBUTTON] = self::createAddButton($element, $complete_form, $add_label);
@@ -71,35 +86,35 @@ class FieldPanel {
    * @param string $label
    *   The label.
    *
-   * @return FormElement
+   * @return array
    *   The processed form element.
    */
   private static function createAddButton(array &$element, array &$complete_form, $label) {
-    $children = element_children($element);
+    $children = Element::children($element);
     $child = $element[array_pop($children)];
 
     $add['#type'] = 'button';
     $add['#weight'] = 4;
     $add['#size'] = 30;
     $add['#id'] = $add['#name'] = $element['#hash'] . '-add';
-    $add['#attributes'] = array('class' => array('fieldpanel-add'));
+    $add['#attributes'] = ['class' => ['fieldpanel-add']];
     $add['#value'] = $label;
     $add['#prefix'] = '<div class="ui-fieldpane-add-button">';
     $add['#suffix'] = '</div>';
-    $add['#ajax'] = array(
-      'params' => array(
+    $add['#ajax'] = [
+      'params' => [
         'target' => $element['#hash'],
         'render' => $element['#hash'],
         'action' => 'add',
         'child' => $child['#hash'],
-      ),
+      ],
       'callback' => 'xml_form_elements_ajax_callback',
       // The parents wrapper is set to the parents hash.
       'wrapper' => $element['#hash'],
       'method' => 'replaceWith',
       'effect' => 'fade',
-    );
-    $add['#limit_validation_errors'] = array();
+    ];
+    $add['#limit_validation_errors'] = [];
     return $add;
   }
 
@@ -113,12 +128,12 @@ class FieldPanel {
    * @param string $label
    *   The label.
    *
-   * @return FormElement
+   * @return array
    *   The processed form element.
    */
   private static function createMoveFieldset(array &$element, array &$complete_form, $label) {
-    $children = element_children($element);
-    $options = array();
+    $children = Element::children($element);
+    $options = [];
     $counter = 0;
     foreach ($children as $child) {
       if (is_numeric($child)) {
@@ -131,47 +146,47 @@ class FieldPanel {
     }
     $child = $element[array_shift($children)];
 
-    $move = array(
+    $move = [
       '#type' => 'fieldset',
       '#title' => $label,
       '#id' => $element['#hash'] . '-swap-fieldset',
-      '#attributes' => array('class' => array('fieldpanel-swap-fieldset')),
+      '#attributes' => ['class' => ['fieldpanel-swap-fieldset']],
       '#name' => $element['#hash'] . '-swap-fieldset',
       '#description' => t('Move element to position. All elements at that position (and after) will be moved one step down'),
-    );
-    $move['move-element'] = array(
+    ];
+    $move['move-element'] = [
       '#type' => 'select',
       '#title' => t('Element Number'),
-      '#attributes' => array('class' => array('fieldpanel-swap-fieldset-move-element')),
+      '#attributes' => ['class' => ['fieldpanel-swap-fieldset-move-element']],
       '#options' => $options,
       '#default_value' => '0',
-    );
-    $move['move-position'] = array(
+    ];
+    $move['move-position'] = [
       '#type' => 'select',
-      '#attributes' => array('class' => array('fieldpanel-swap-fieldset-move-position')),
+      '#attributes' => ['class' => ['fieldpanel-swap-fieldset-move-position']],
       '#title' => t('Position Number'),
       '#options' => $options,
       '#default_value' => '0',
-    );
-    $move['move-op'] = array(
+    ];
+    $move['move-op'] = [
       '#type' => 'button',
       '#id' => $element['#hash'] . '-move',
       '#name' => $element['#hash'] . '-move',
       '#value' => $label,
-      '#limit_validation_errors' => array($element['#parents']),
-      '#ajax' => array(
-        'params' => array(
+      '#limit_validation_errors' => [$element['#parents']],
+      '#ajax' => [
+        'params' => [
           'target' => $element['#hash'],
           'render' => $element['#hash'],
           'action' => 'move',
           'child' => $child['#hash'],
-        ),
+        ],
         'callback' => 'xml_form_elements_ajax_callback',
         'wrapper' => $element['#hash'],
         'method' => 'replaceWith',
         'effect' => 'fade',
-      ),
-    );
+      ],
+    ];
     return $move;
   }
 
@@ -186,44 +201,4 @@ class FieldPanel {
     return $ret;
   }
 
-}
-
-/**
- * Implements hook_preprocess_fieldpanel().
- */
-function template_preprocess_fieldpanel(&$vars) {
-  $tabs = $vars['element'];
-  // Header Info.
-  $vars['collapsible'] = $tabs['#collapsible'] == TRUE;
-  $vars['collapsed'] = $tabs['#collapsed'] == TRUE;
-  // Get Fieldpanel.
-  $keys = element_children($tabs);
-  $children = array();
-
-  foreach ($keys as $key) {
-    $children[$key] = &$tabs[$key];
-  }
-  $children = array_filter($children, array('FieldPanel', 'filterChildren'));
-  // First element has different icons, and title.
-  $first = array_shift($children);
-  $vars['title'] = isset($first['#title']) ? $first['#title'] : 1;
-  $vars['link'] = $first['#hash'];
-  // Remaining fieldpane.
-  $count = 2;
-  foreach ($children as $child) {
-    $title = isset($child['#title']) ? $child['#title'] : $count;
-    $delete = isset($child[FieldPane::DELETEBUTTON]) ? $child[FieldPane::DELETEBUTTON]['#id'] : FALSE;
-    $vars['fieldpane'][] = array($title, $child['#hash'], $delete);
-    $count++;
-  }
-  // Content Info.
-  if (isset($tabs['#children'])) {
-    $vars['content'] = $tabs['#children'];
-  }
-  else {
-    $parents = $tabs['#array_parents'];
-    $name = array_pop($parents);
-    $vars['content'] = '';
-    drupal_set_message(t('Attempted to create tab %name without defining any child fieldpanes.', array('%name' => $name)), 'error');
-  }
 }

@@ -1,0 +1,11 @@
+fieldpanel:
+  version: 1.x
+  js:
+    js/fieldpanel.js: {}
+  css:
+    component:
+      css/fieldpanel.css: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/jquery.ui.sortable
