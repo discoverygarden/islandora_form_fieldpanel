@@ -152,7 +152,7 @@ class FieldPanel extends FormElement {
       '#id' => $element['#hash'] . '-swap-fieldset',
       '#attributes' => ['class' => ['fieldpanel-swap-fieldset']],
       '#name' => $element['#hash'] . '-swap-fieldset',
-      '#description' => t('Move element to position. All elements at that position (and after) will be moved one step down'),
+      '#description' => t('Move element to position. All elements at that position (and after) will be moved one step down.'),
     ];
     $move['move-element'] = [
       '#type' => 'select',
